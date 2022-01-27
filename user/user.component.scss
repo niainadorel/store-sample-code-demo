@@ -1,0 +1,39 @@
+app-user {
+  .ngx-datatable {
+    margin-top: 1em;
+  }
+
+  .custom-button {
+    margin-left: 2em;
+  }
+
+  .item-per-page-label{
+    display: block;
+    margin-left: auto;
+    margin-right: 7px;
+  }
+  mat-select.item-per-page-select{
+    padding: 7px;
+    background: #fbfafa;
+    border: 1px solid gainsboro;
+    border-radius: 3px;
+    width: 75px!important;
+  }
+
+  .user-active {
+    .mat-slide-toggle-thumb {
+      background-color: #19c93f !important;
+    }
+    .mat-slide-toggle-bar {
+      background-color: rgba(64, 255, 96, 0.54) !important;
+    }
+  }
+  .user-not-active {
+    .mat-slide-toggle-thumb {
+      background-color: #c91919 !important;
+    }
+    .mat-slide-toggle-bar {
+      background-color: rgba(255, 64, 64, 0.54) !important;
+    }
+  }
+}

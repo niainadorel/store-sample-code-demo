@@ -1,0 +1,56 @@
+<div class="container">
+  <h1>Profil utilisateur</h1>
+
+  <div class="form-container">
+    <form [formGroup]="userForm"  fxLayout="row" fxLayoutGap="50px">
+      <div fxLayout="column">
+        <app-input-text-form
+          label="Nom"
+          fieldName="firstName"
+          [required]="true"
+          (formControl)="addFormControl('firstName', $event)"
+        ></app-input-text-form>
+        <app-input-text-form
+          label="Prénom"
+          fieldName="lastName"
+          [required]="true"
+          (formControl)="addFormControl('lastName', $event)"
+        ></app-input-text-form>
+        <mat-form-field appearance="fill">
+          <mat-label>Rôle</mat-label>
+          <mat-select formControlName="role" [value]="data?.row?.role" [disabled]="!user || (user?.role?.name !== 'SUPER ADMIN' && user?.role?.name !== 'ADMIN')">
+            <mat-option *ngFor="let role of roles" [value]="role._id">{{role.name}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="userForm.hasError('required', 'role')">
+            Veuillez selectionner un rôle.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxLayout="column">
+        <app-input-text-form
+          label="Email"
+          fieldName="email"
+          [required]="true"
+          type="email"
+          (formControl)="addFormControl('email', $event)"
+        ></app-input-text-form>
+        <mat-form-field appearance="fill">
+          <mat-label>Mot de passe</mat-label>
+          <input type="password" formControlName="password" matInput [required]="!isEdit">
+          <mat-error *ngIf="userForm.hasError('required', 'password')">
+            Veuillez entrer votre nouveau mot de passe.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Confirmer mot de passe</mat-label>
+          <input type="password" formControlName="confirmPassword" matInput [required]="!isEdit" [errorStateMatcher]="passwordMatcher">
+          <mat-error *ngIf="userForm.hasError( 'notSame')">
+            Votre mot de passe ne corresponde pas.
+          </mat-error>
+        </mat-form-field>
+        <button *ngIf="!isEdit" fxFlexAlign="end" mat-button color="primary" [disabled]="!userForm.valid" (click)="addUser(userForm.value)">AJOUTER</button>
+        <button *ngIf="isEdit" fxFlexAlign="end" mat-button color="primary" [disabled]="!userForm.valid" (click)="updateUser(userForm.value)">METTRE A JOUR</button>
+      </div>
+    </form>
+  </div>
+</div>

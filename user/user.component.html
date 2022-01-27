@@ -1,0 +1,115 @@
+<div class="container">
+  <div fxLayout="column">
+    <h1 class="title">Utilisateurs</h1>
+
+    <div fxLayout="row" fxLayoutGap="8px">
+      <div class="custom-button noselect" matRipple fxLayout="row" fxLayoutAlign="center center" (click)="openModal()" *ngIf="showAddUser">
+        <mat-icon class="bg-danger text-white">add</mat-icon>
+        <span class="text-danger">Nouveau utilisateur</span>
+      </div>
+      <span class="mr-auto"></span>
+<!--      <mat-form-field class="mr-4 filter" appearance="outline">-->
+<!--        <mat-label>Filtre par fonction</mat-label>-->
+<!--          <mat-select [(value)]="userFonctionFilter" (selectionChange)="filterChanged()">-->
+<!--          <mat-option [value]="'ALL'">Tout</mat-option>-->
+<!--          <mat-option [value]="role?.name" *ngFor="let role of roles">-->
+<!--            {{role?.name}}-->
+<!--          </mat-option>-->
+<!--        </mat-select>-->
+<!--      </mat-form-field>-->
+      <mat-form-field class="mr-4 filter" appearance="outline">
+        <mat-label>Filtre par activation compte</mat-label>
+        <mat-select [(value)]="userActiveFilter" (selectionChange)="filterChanged()">
+          <mat-option [value]="'ALL'">Tout</mat-option>
+          <mat-select-trigger>
+           {{getAccountActivationText(userActiveFilter)}}
+          </mat-select-trigger>
+          <mat-option [value]="userActive.value" *ngFor="let userActive of userActiveArray">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px">
+              <i class="material-icons" [style.color]="userActive.color">radio_button_checked</i>
+              <span>{{userActive?.label}}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div fxLayout="row" style="width: 100%; padding: 0 2em;">
+    <ngx-datatable
+      style="width: 100%;"
+      class="material"
+      [rows]="rowsFiltered"
+      [columnMode]="'force'"
+      [headerHeight]="50"
+      [footerHeight]="50"
+      [rowHeight]="50"
+      [columns]="columns"
+      [limit]="itemPerPage"
+      [offset]="0"
+      #userTable
+    >
+    <ngx-datatable-footer>
+      <ng-template
+        ngx-datatable-footer-template
+        let-rowCount="rowCount"
+        let-pageSize="pageSize"
+        let-selectedCount="selectedCount"
+        let-curPage="curPage"
+        let-offset="offset"
+        let-isVisible="isVisible"
+        >
+          <span>Total: {{rowCount}}</span>
+          <span class="item-per-page-label">Projet par page: </span>
+          <mat-select [(value)]="itemPerPage" class="item-per-page-select">
+            <mat-option [value]="choice" *ngFor="let choice of itemPerPageChoice" >{{choice}}</mat-option>
+          </mat-select>
+          <datatable-pager [pagerLeftArrowIcon]="'datatable-icon-left'"
+          [pagerRightArrowIcon]="'datatable-icon-right'"
+          [pagerPreviousIcon]="'datatable-icon-prev'"
+          [pagerNextIcon]="'datatable-icon-skip'"
+          [page]="curPage"
+          [size]="pageSize"
+          [count]="rowCount"
+          [hidden]="!((rowCount / pageSize) > 1)"
+          (change)="table.onFooterPage($event)">
+          </datatable-pager>
+      </ng-template>
+    </ngx-datatable-footer>
+    </ngx-datatable>
+  </div>
+</div>
+
+<ng-template #activeTemplate let-row="row" let-value="value">
+  <div fxLayout="row">
+    <mat-slide-toggle [ngClass]="row.active ? 'user-active' : 'user-not-active'" [checked]="row.active" #e (toggleChange)="updateAccountActive(row, !e.checked)"></mat-slide-toggle>
+  </div>
+</ng-template>
+
+<ng-template #actionTemplate let-row="row" let-value="value">
+  <div fxLayout="row">
+    <button mat-button (click)="editModal(row)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-button class="text-danger" (click)="deleteModal(row)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #roleTemplate let-row="row" let-value="value">
+  <span>{{ value }} {{value == 'ADMIN' && row.isPimper ? 'PIMPER' : ''}}</span>
+</ng-template>
+
+<!-- Date TEMPLATE -->
+<ng-template #dateTemplate let-row="row" let-value="value">
+  <span>
+    {{value | date:'dd-MM-YYYY'}}
+  </span>
+</ng-template>
+
+<!-- longtext TEMPLATE -->
+<ng-template #longtext let-row="row" let-value="value">
+  <span (click)="copyToClipboard(value)">
+    ... {{value | slice:0:6}}
+  </span>
+</ng-template>
